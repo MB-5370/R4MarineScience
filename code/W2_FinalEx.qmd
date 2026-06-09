@@ -65,11 +65,13 @@ rm(catch1, catch2, catch3, catch4) # Clean up the environment
 
 # Alternative method for loading files
 ```{r}
-file_path <- "../data/workshop2/estuary_catch_log.xlsx"
-catch_data2 <- excel_sheets(file_path) |>
-  map_dfr(~read_excel(path = file_path, sheet = .x))
+# file_path <- "../data/workshop2/estuary_catch_log.xlsx"
+# catch_data2 <- excel_sheets(file_path) |>
+#   map_dfr(~read_excel(path = file_path, sheet = .x))
 ```
 
+
+# Examine data
 ```{r}
 catch_data
 head(catch_data)
@@ -77,4 +79,14 @@ glimpse(catch_data)
 str(catch_data)
 ```
 
+
+Can't tell from these outputs how many levels of site and species we have. Two options: let's check those explicitly by using distinct() or can convert to factors
+Let's look at the distinct values first, as we might need to clean before converting to factor vars.
+```{r}
+catch_raw |> 
+  distinct(site)
+
+catch_raw |> 
+  distinct(species)
+```
 
