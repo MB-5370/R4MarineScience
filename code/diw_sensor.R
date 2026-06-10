@@ -25,15 +25,29 @@ sensor_data <-
   )
 
 # Summarise 15-minute sonde data into daily means
-sensor_daily <- sensor_data |>
-  mutate(
-    date = floor_date(datetime, "day"),
-    date = as_date(date) # Ensure it matches the Date format of the catch log
-  ) |>
+sensor_daily <- 
+  sensor_data |>
+  mutate(date = as_date(floor_date(datetime, "day"))) |>
   group_by(site, date) |>
   summarise(
     mean_temp = mean(temperature, na.rm = TRUE),
     mean_salinity = mean(salinity, na.rm = TRUE),
-    .groups = "drop"
-  )
+    mean_turbidity = mean(turbidity, na.rm = TRUE),
+    .groups = "drop")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

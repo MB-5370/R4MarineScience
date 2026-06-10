@@ -152,39 +152,16 @@ head(species_dict)
 
 
 
-#  Load sensor data, 
+
+# Wrangle the sonde data
 ```{r}
-sensor_raw <- read_csv("../data/workshop2/estuary_sonde_data.csv")
+source(here::here("code/diw_sensor.R"))
 ```
-
-
-# Check sensor data
-```{r}
-head(sensor_raw)
-str(sensor_raw)
-glimpse(sensor_raw)
-summary(sensor_raw)
-```
-
-
 #### Notes:
-- Environmental variables look like they are mostly in good shape (all numeric), however the turbidity data has a failed value (-999) so we'll need to deal with that
-- Site looks ok, but again should check how many levels or distinct values we have:
-
-
-### Clean up sensor data
-```{r}
-sensor_data <- 
-  sensor_raw |>
-  mutate(
-    # Parse the messy character string (Day/Month/Year Hour:Minute)
-    datetime = dmy_hm(timestamp),
-    # Convert the -999.0 hardware error to a true NA
-    turbidity = na_if(turbidity, -999),
-    # Convert negative salinity values to na
-    salinity = ifelse(salinity < 0, NA, salinity),
-  )
-```
+- Environmental variables needed cleaning:
+- Turbidity data has a failed value (-999) 
+- Salinity had some negative values which are not possible and should be converted to NA
+- Site ok
 
 
 
@@ -213,15 +190,44 @@ species_dict |>
 ```{r}
 catch_data <- catch_data |>
   mutate(common_name = species) |>
-  left_join(species_dict, by = join_by(common_name)) |> 
-  select(site, date, common_name, scientific_name, count) |>
-  select(-common_name) 
+  left_join(species_dict, by = join_by(common_name))
+```
+
+
+# Need to:
+
+1. Join with metadata and sensor data
+2. Implicit zero observations
+4 x spp
+4 x sites
+30 surveys
+
+4*4*30
+
+# join catch data with metadata and sensor data
+```{r}
+catch_data_final <- catch_data |>
+  left_join(metadata, by = join_by(site == site_name)) |>
+  left_join(sensor_daily, by = join_by(site, date))
 ```
 
 
 
 
 
+```{r}
+catch_data_final |> 
+  complete(
+    nesting(site, date, 
+           # lat, lon, 
+            zone, mean_temp, mean_salinity, mean_turbidity),
+    scientific_name
+  ) |>
+  mutate(
+    # Convert the resulting NA counts to 0
+    count = coalesce(count, 0)
+  )
+```
 
 
 
