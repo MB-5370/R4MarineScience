@@ -172,5 +172,64 @@ summary(sensor_raw)
 - Site looks ok, but again should check how many levels or distinct values we have:
 
 
+### Clean up sensor data
+```{r}
+sensor_data <- 
+  sensor_raw |>
+  mutate(
+    # Parse the messy character string (Day/Month/Year Hour:Minute)
+    datetime = dmy_hm(timestamp),
+    # Convert the -999.0 hardware error to a true NA
+    turbidity = na_if(turbidity, -999),
+    # Convert negative salinity values to na
+    salinity = ifelse(salinity < 0, NA, salinity),
+  )
+```
+
+
+
+# Standardise variable in the catch log to match dictionaries
+```{r}
+catch_data <- catch_data |>
+  mutate(
+    site = str_to_lower(str_trim(site)),
+    site = str_replace_all(site, " ", "_"),
+    species = str_to_lower(str_trim(species)),
+    species = str_replace_all(species, " ", "_")
+  )
+```
+
+
+## Check common names in catch log match those in the taxonomic dictionary
+```{r}
+catch_data |> 
+  distinct(species)
+species_dict |>
+  distinct(common_name)
+```
+
+
+# Taxonomic Translation (Common to Scientific)
+```{r}
+catch_data <- catch_data |>
+  mutate(common_name = species) |>
+  left_join(species_dict, by = join_by(common_name)) |> 
+  select(site, date, common_name, scientific_name, count) |>
+  select(-common_name) 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
