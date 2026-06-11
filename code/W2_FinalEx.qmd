@@ -21,7 +21,7 @@ editor_options:
 ```{r setup, include=FALSE}
 # Set options, housekeeping
 knitr::opts_chunk$set(
-	echo = FALSE,
+	echo = TRUE,
 	include = TRUE,
 	message = FALSE,
 	warning = FALSE)
@@ -42,7 +42,7 @@ rm(list = ls())
 
 # Packages
 
-```{r packages}
+```{r packages echo = FALSE}
 library(tidyverse) # Inc dplyr, ggplot2, lubridate etc
 library(readxl) # For reading in excel files
 ```
@@ -54,7 +54,7 @@ library(readxl) # For reading in excel files
 The catch data is split across 4 tabs in one excel file Load indivudally
 
 ```{r load-catch-1}
-catch1 <- read_excel(here::here("data/workshop2/estuary_catch_log.xlsx"), sheet = 1)
+catch1 <- read_excel(here::here("data/workshop2/estuary_catch_log.xlsx"), sheet = "Lower_ross")
 catch2 <- read_excel("../data/workshop2/estuary_catch_log.xlsx", sheet = 2)
 catch3 <- read_excel("../data/workshop2/estuary_catch_log.xlsx", sheet = 3)
 catch4 <- read_excel("../data/workshop2/estuary_catch_log.xlsx", sheet = 4)
@@ -195,6 +195,7 @@ We know we need to add the metadata in, but we also have this dataset with sonde
 # Load the sonde data
 (Code for this is written in separate script which we can source from here)
 ```{r load-sonde}
+
 source(here::here("code/diw_sensor.R"))
 ```
 
