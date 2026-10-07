@@ -38,31 +38,25 @@ execute:
       dev: "cairo_pdf"    # Uses high-quality Cairo device for crisp vector graphics in PDF
 ---
 
-```{r setup, include=FALSE}
-# Set options, housekeeping
-knitr::opts_chunk$set(
-	echo = TRUE,
-	include = TRUE,
-	message = FALSE,
-	warning = FALSE)
-```
 
 # Introduction
 
 Here we are going to wrangle in messy data on the Ross River estuary fish surveys and produce final clean tables and figure. We have 4 separate files that were provided to us by a former PhD student. 
 We know we have data for 4 sites, 4 species, and 30 days of sampling. We also have metadata on the sites and sensor data on the environmental conditions at each site.
 
-# Housekeeping
 
-```{r housekeeping}
+```{r}
+#| label: housekeeping
 #| message: true
 #| warning: false
 rm(list = ls())
+
 ```
 
-# Packages
 
-```{r packages echo = FALSE}
+
+```{r}
+#| label: packages
 library(tidyverse) # Inc dplyr, ggplot2, lubridate etc
 library(readxl) # For reading in excel files
 ```
@@ -71,7 +65,7 @@ library(readxl) # For reading in excel files
 
 # Main dataset
 
-The catch data is split across 4 tabs in one excel file Load indivudally
+The catch data is split across 4 tabs in one excel file Load individually
 
 ```{r load-catch-1}
 catch1 <- read_excel(here::here("data/workshop2/estuary_catch_log.xlsx"), sheet = "Lower_ross")
